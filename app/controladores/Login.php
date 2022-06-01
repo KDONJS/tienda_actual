@@ -18,11 +18,45 @@ class Login extends Controlador
     }
 
     function olvido(){
-        $datos = [
-         "titulo" => "Recuperar-contraseña",
-         "menu" => false
-        ];
-        $this->vista("Recuperar",$datos);
+        $errores = array();
+        $data = array();
+        if ($_SERVER['REQUEST_METHOD']=="POST"){
+            $correo = isset($_POST["correo"])?$_POST["correo"]:"";
+            if($correo==""){
+                array_push($errores,"el correo es obligatorio");
+            }
+            if(!filter_var($correo,FILTER_VALIDATE_EMAIL)){
+                array_push($errores,"El correo ingresado no es valido");
+            }
+        if (count($errores)==0) {
+                if ($this->modelo->validaCorreo($correo)) {
+                    array_push($errores,"El correo no existe");
+                }else{
+                    $this->modelo->enviarCorreo($correo);
+                }
+            }
+        }else{
+            $datos = [
+                "titulo" => "Recuperar contraseña",
+                "menu" => false,
+                "error" => [],
+                "data" => [],
+                "subtitulo"=>"¿Olvidaste tu contraseña?",
+                "texto"=>"Cambie su contraseña en tres sencillos pasos. Esto ayuda a mantener segura su nueva contraseña."
+               ];
+               $this->vista("Recuperar",$datos);
+        }
+        if (count($errores)) {
+            $datos = [
+                "titulo" => "Olvido clave de acceso",
+                "menu" => false,
+                "error" => $errores,
+                "data" => [],
+                "subtitulo"=>"¿Olvidaste tu contraseña?",
+                "texto"=>"Cambie su contraseña en tres sencillos pasos. Esto ayuda a mantener segura su nueva contraseña."
+               ];
+               $this->vista("Recuperar",$datos);
+        }
      }
 
     function registro(){
@@ -100,9 +134,33 @@ class Login extends Controlador
                $r = $this->modelo->insertarRegistro($data);
 
                if($r){
-                   print "se inserto bien";
+                $datos = [
+                    "titulo" => "Bienvenido a la tienda virtual",
+                    "menu" => false,
+                    "error" => [],
+                    "data" => [],
+                    "subtitulo"=>"Bienvebido a nuestra tienda",
+                    "texto"=>"Gracias por su registro",
+                    "color"=>"alert-success",
+                    "url"=>"menu",
+                    "colorBoton"=>"btn-success",
+                    "textoBoton"=>"Iniciar sesion"
+                   ];
+                   $this->vista("MensajeVista",$datos);
                }else{
-                   print "oe mongol aslo bien";
+                $datos = [
+                    "titulo" => "Error en el registro",
+                    "menu" => false,
+                    "error" => [],
+                    "data" => [],
+                    "subtitulo"=>"Por favor intentalo nuevamente",
+                    "texto"=>"Gracias por la comprension",
+                    "color"=>"alert-danger",
+                    "url"=>"Registro",
+                    "colorBoton"=>"btn-danger",
+                    "textoBoton"=>"Volver a registrar"
+                   ];
+                   $this->vista("MensajeVista",$datos);
                }
 
             }else{

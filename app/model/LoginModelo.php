@@ -46,6 +46,11 @@ class LoginModelo
         return (count($data)==0)?true:false;
     }
 
+
+    function enviarCorreo($correo){
+        print $correo;
+    }
+
 }
 
 
