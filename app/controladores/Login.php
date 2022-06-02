@@ -10,6 +10,13 @@ class Login extends Controlador
     }
 
     function caratula(){
+
+        if (isset($_COOKIE["datos"])) {
+            $datos_array = explode("|",$_COOKIE["datos"]);
+            $usuario = $datos_array[0];
+            $clave = $datos_array[1];
+        }
+
        $datos = [
         "titulo" => "Login",
         "menu" => false
@@ -181,6 +188,56 @@ class Login extends Controlador
                $this->vista("Registro",$datos);
         }
         
+     }
+
+
+     function Verifica(){
+
+        $errores = array();
+
+        $valor = "";
+
+        if ($_SERVER["REQUEST_METHOD"]=="POST") {
+            $usuario = isset($_POST["usuario"])?$_POST["usuario"]:"";
+            $clave = isset($_POST["clave"])?$_POST["clave"]:"";
+            $recordar = isset($_POST["recordar"])?"on":"off";
+            $errores = $this->modelo->Verificar($usuario, $clave);
+
+            //recuerdame
+
+            if ($recordar == "on") {
+                $valor = $usuario."|".$clave;
+                $fecha = time()+(60*60*24*7*2);
+            }else{
+                $fecha = time() -1;
+            }
+
+            setcookie("datos",$valor,$fecha, RUTA);
+
+            //
+
+            $data = [
+                "usuario" => $usuario,
+                "clave" => $clave,
+                "recordar" => $recordar
+            ];
+
+            //
+
+            if (empty($errores)) {
+                header("location:".RUTA."/tienda");
+            } else {
+                $datos = [
+                    "titulo" => "Login",
+                    "menu" => false,
+                    "errores" => $errores,
+                    "data" => $data
+                  ];
+                  $this->vista("loginVista",$datos);
+            }
+            
+        }
+
      }
 
 }

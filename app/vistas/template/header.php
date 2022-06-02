@@ -25,6 +25,7 @@
     <!-- Main Theme Styles + Bootstrap-->
     <link rel="stylesheet" media="screen" href="<?php print $url_base ?>/css/theme.min.css">
 
+
   </head>
   <!-- Body-->
   <body class="handheld-toolbar-enabled">

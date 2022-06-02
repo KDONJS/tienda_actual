@@ -10,17 +10,39 @@
                 <hr>
                 <h3 class="fs-base pt-4 pb-2">Bienvenido</h3>
 
+                <div>
+                <?php 
+      
+                    if (isset($datos["errores"])) {
+                      if (count($datos["errores"])>0) {
+                        print "
+                        <div class='alert alert-danger d-flex' role='alert'>
+                          <div class='alert-icon'>
+                            <i class='ci-close-circle'></i>
+                          </div>";
+
+                          print "<div>";
+                          foreach ($datos["errores"] as $key => $value) {
+                            print "".$value."<br>";
+                          }
+                          print"</div> </div>";
+                      }
+                    }
+                    
+                    ?>
+                </div>
+
 
                 <!-- login del sistema -->
                     <form class="needs-validation" action="<?php print RUTA; ?>/Login/verifica" method="POST" novalidate>
 
                   <div class="input-group mb-3">
                       <i class="position-absolute top-50 ci-user translate-middle-y text-muted fs-base ms-3"></i>
-                    <input class="form-control rounded-start" type="text" placeholder="Usuario" id="usuario" name="usuario" required>
+                    <input class="form-control rounded-start" type="text" placeholder="Usuario" id="usuario" name="usuario"  value="<?php isset($datos["data"]["usuario"])? $datos["data"]["usuario"]:""; ?>" required>
                   </div>
                   <div class="input-group mb-3"><i class="ci-locked position-absolute top-50 translate-middle-y text-muted fs-base ms-3"></i>
                     <div class="password-toggle w-100">
-                      <input class="form-control" type="password" name="clave" id="clave" placeholder="Contraseña" required>
+                      <input class="form-control" type="password" name="clave" id="clave" placeholder="Contraseña" value="<?php isset($datos["data"]["clave"])? $datos["data"]["clave"]:""; ?>" required>
                       <label class="password-toggle-btn" aria-label="Show/hide password">
                         <input class="password-toggle-check" type="checkbox"><span class="password-toggle-indicator"></span>
                       </label>
@@ -28,7 +50,14 @@
                   </div>
                   <div class="d-flex flex-wrap justify-content-between">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox"  name="recordar" checked id="remember_me">
+                      <input class="form-check-input" type="checkbox"  name="recordar"
+                      <?php 
+                      
+                      if(isset($datos['data']['recordar'])){
+                        if($datos['data']['recordar']=="on" )print "checked";
+                      }
+
+                      ?>  >
                       <label class="form-check-label" for="remember_me">Recordar</label>
                     </div>
                     <a class="nav-link-inline fs-sm" href="<?php print RUTA; ?>/Login/olvido/">¿Olvidaste contraseña?</a>
@@ -43,7 +72,6 @@
                     <input class="btn btn-primary" type="submit" value="Enviar"></input>
                   </div>
                   </div>
-                  
                 </form>
                 
                 <!-- login del sistema -->
